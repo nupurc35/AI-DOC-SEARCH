@@ -14,7 +14,11 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+    "http://localhost:5173",
+    "https://ai-doc-search.vercel.app",
+    "https://*.vercel.app",
+],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -113,3 +117,11 @@ async def ask_question(payload: dict):
     answer = generate_answer(question, top_chunks)
 
     return {"answer": answer, "sources": top_chunks}
+
+import os
+import uvicorn
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
+
+

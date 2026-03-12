@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
 
-const UPLOAD_URL = 'http://localhost:8000/upload'
-const ASK_URL = 'http://localhost:8000/ask'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const UPLOAD_URL = `${API_URL}/upload`
+const ASK_URL = `${API_URL}/ask`
 
 function SourceList({ sources = [] }) {
   const [open, setOpen] = useState(false)
