@@ -50,6 +50,32 @@ function App() {
   const [isAsking, setIsAsking] = useState(false)
 
   useEffect(() => {
+    const root = document.documentElement
+
+    const updateViewport = () => {
+      const viewport = window.visualViewport
+      const height = viewport?.height ?? window.innerHeight
+      const offsetTop = viewport?.offsetTop ?? 0
+      const keyboardOffset = Math.max(0, window.innerHeight - height - offsetTop)
+
+      root.style.setProperty('--app-vh', `${height}px`)
+      root.style.setProperty('--keyboard-offset', `${keyboardOffset}px`)
+    }
+
+    updateViewport()
+
+    window.addEventListener('resize', updateViewport)
+    window.visualViewport?.addEventListener('resize', updateViewport)
+    window.visualViewport?.addEventListener('scroll', updateViewport)
+
+    return () => {
+      window.removeEventListener('resize', updateViewport)
+      window.visualViewport?.removeEventListener('resize', updateViewport)
+      window.visualViewport?.removeEventListener('scroll', updateViewport)
+    }
+  }, [])
+
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isAsking])
 
