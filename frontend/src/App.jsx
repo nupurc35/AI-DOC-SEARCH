@@ -38,6 +38,7 @@ function SourceList({ sources = [] }) {
 function App() {
   const fileInputRef = useRef(null)
   const messagesEndRef = useRef(null)
+  const inputBarRef = useRef(null)
   const switchTimerRef = useRef(null)
   const [screen, setScreen] = useState('upload')
   const [dragActive, setDragActive] = useState(false)
@@ -57,9 +58,14 @@ function App() {
       const height = viewport?.height ?? window.innerHeight
       const offsetTop = viewport?.offsetTop ?? 0
       const keyboardOffset = Math.max(0, window.innerHeight - height - offsetTop)
+      const inputHeight = inputBarRef.current?.offsetHeight ?? 0
 
       root.style.setProperty('--app-vh', `${height}px`)
       root.style.setProperty('--keyboard-offset', `${keyboardOffset}px`)
+      root.style.setProperty(
+        '--chat-messages-padding-bottom',
+        `${Math.max(inputHeight + keyboardOffset + 16, 96)}px`,
+      )
     }
 
     updateViewport()
@@ -314,18 +320,20 @@ function App() {
         <div ref={messagesEndRef} />
       </main>
 
-      <form className="chat-inputbar" onSubmit={handleAsk}>
-        <input
-          type="text"
-          value={question}
-          onChange={(event) => setQuestion(event.target.value)}
-          placeholder="Ask something from the PDF..."
-          disabled={isAsking}
-        />
-        <button type="submit" disabled={isAsking || !question.trim()}>
-          Send
-        </button>
-      </form>
+      <div className="chat-inputbar-wrap" ref={inputBarRef}>
+        <form className="chat-inputbar" onSubmit={handleAsk}>
+          <input
+            type="text"
+            value={question}
+            onChange={(event) => setQuestion(event.target.value)}
+            placeholder="Ask something from the PDF..."
+            disabled={isAsking}
+          />
+          <button type="submit" disabled={isAsking || !question.trim()}>
+            Send
+          </button>
+        </form>
+      </div>
     </div>
   )
 }
